@@ -30,17 +30,16 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double kTrackWidth = Units.inchesToMeters(20.5);
-    // 左右輪距
-    public static final double kWheelBase = Units.inchesToMeters(20.5);
-    // 前後輪距
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+    public static final double kTrackWidth = Units.inchesToMeters(20.5);// 左右輪距
+    public static final double kWheelBase = Units.inchesToMeters(20.5);// 前後輪距
+
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(   //全向輪物理
       new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),
       new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
       new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
 
-      public static final int kFLDriveMotorPort = 1;
+      public static final int kFLDriveMotorPort = 1;      //
       public static final int kFRDriveMotorPort = 2;
       public static final int kBLDriveMotorPort = 3;
       public static final int kBRDriveMotorPort = 4;
