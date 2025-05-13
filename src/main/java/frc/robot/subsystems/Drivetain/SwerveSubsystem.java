@@ -6,6 +6,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,6 +25,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule FL, FR, BL, BR;
     private final AHRS gyro;
     private final SwerveDriveOdometry odometer; //里程計(自動模式)
+    private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
     public SwerveSubsystem() {
 
@@ -190,6 +192,24 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     //---------
+
+    // 辨識用
+    public void drive(double xSpeed, double ySpeed, double turningSpeed, boolean fieldRelative) {
+        // 1. 套用SlewRateLimiter
+        double xSpd = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec;
+        double ySpd = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec;
+        double turnSpd = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSec;
+
+        // 2. 計算 ChassisSpeeds
+        ChassisSpeeds chassisSpeeds = fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpd, ySpd, turnSpd, getRotation2d())
+            : new ChassisSpeeds(xSpd, ySpd, turnSpd);
+
+        // 3. 轉換成模組狀態並設定
+        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        setModuleStates(moduleStates);
+    }
+    //
 
     @Override
     public void periodic() {

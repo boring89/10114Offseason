@@ -114,4 +114,9 @@ public final class Constants {
   public static final class MotorConstants {
     public static final double kNeoFreeSpeedRpm = 6784;
   }
+
+  public static final class VisionConstants {
+    public static final double kDeadband = 0.1;
+    public static final double kTargetY = 0.0;
+  }
 }

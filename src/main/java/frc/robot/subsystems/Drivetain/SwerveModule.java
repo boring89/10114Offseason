@@ -23,22 +23,22 @@ import com.revrobotics.spark.SparkBase;
 
 public class SwerveModule {
      
-    private final SparkFlex driveMotor;         // 馬達定義
+    private final SparkFlex driveMotor;                                 // 馬達定義
     private final SparkMax turningMotor;
 
     private final SparkFlexConfig FlexConf = new SparkFlexConfig();     // 馬達設定
     private final SparkMaxConfig MaxConf = new SparkMaxConfig();
 
-    private final RelativeEncoder driveEncoder;         // 馬達編碼器(馬達內部，斷電即丟失數據)
+    private final RelativeEncoder driveEncoder;                         // 馬達編碼器(馬達內部，斷電即丟失數據)
     private final RelativeEncoder turningEncoder;
 
-    private final SparkClosedLoopController driveController;        // PID控制器 (Spark系->SparkClosedLoop CTRE系在Config可設定 其餘則用PIDController(萬能)
+    private final SparkClosedLoopController driveController;            // PID控制器 (Spark系->SparkClosedLoop CTRE系在Config可設定 其餘則用PIDController(萬能)
     private final SparkClosedLoopController turningController;
 
-    private final CANcoder absoluteEncoder;                         // 絕對編碼器，負責初始化階段取得絕對朝向以校準馬達編碼器
+    private final CANcoder absoluteEncoder;                             // 絕對編碼器，負責初始化階段取得絕對朝向以校準馬達編碼器
 
-    private final boolean absoluteEncoderReversed;                  // 絕對編碼器是否反轉
-    private final SwerveModulePosition currentPosition;             // 當前全向輪數據
+    private final boolean absoluteEncoderReversed;                      // 絕對編碼器是否反轉
+    private final SwerveModulePosition currentPosition;                 // 當前全向輪數據
 
     double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps; // kFF (SparkClosedLoop用)
 
@@ -55,20 +55,20 @@ public class SwerveModule {
         turningMotor = new SparkMax(turningMotorId, MotorType.kBrushless);
 
         FlexConf// 駕駛馬達之設定(SparkFlex)
-            .idleMode(IdleMode.kBrake)              // 煞車模式，在不給動力時有阻力維持停止，確保機器不會滑行
-            .smartCurrentLimit(50)       // 電流限制，調高雖然能提升性能，但馬達會承受不住燒掉，詳細數值要問全向輪供應商
-            .inverted(driveMotorReverdsed)          // 是否反轉
-            .apply(FlexConf);                       // 套用設定
-        FlexConf.encoder// 編碼器設定
-            .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)           // 馬達數值轉換 (主要是齒比與單位)
+            .idleMode(IdleMode.kBrake)                                              // 煞車模式，在不給動力時有阻力維持停止，確保機器不會滑行
+            .smartCurrentLimit(50)                                       // 電流限制，調高雖然能提升性能，但馬達會承受不住燒掉，詳細數值要問全向輪供應商
+            .inverted(driveMotorReverdsed)                                          // 是否反轉
+            .apply(FlexConf);                                                       // 套用設定
+        FlexConf.encoder// 編碼器設定   
+            .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)       // 馬達數值轉換 (主要是齒比與單位)
             .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec)
-            .apply(FlexConf.encoder);                                                   // 套用
+            .apply(FlexConf.encoder);                                               // 套用
         FlexConf.closedLoop// PID控制器設定控制器設定
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)     // 反饋傳感器
-            .pid(0.13, 0.0, 0.0)                          // PID數值
-            .velocityFF(drivingVelocityFeedForward)             // FF數值 (反饋反饋)
-            .outputRange(-1, 1)                       // 輸出範圍 (馬達輸入只有-1 ~ 1)
-            .apply(FlexConf.closedLoop);                        // 套用
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)                         // 反饋傳感器
+            .pid(0.13, 0.0, 0.0)                                              // PID數值
+            .velocityFF(drivingVelocityFeedForward)                                 // FF數值 (反饋反饋)
+            .outputRange(-1, 1)                                           // 輸出範圍 (馬達輸入只有-1 ~ 1)
+            .apply(FlexConf.closedLoop);                                            // 套用
         
         
         // 同上
