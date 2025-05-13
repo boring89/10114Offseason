@@ -152,7 +152,6 @@ public class SwerveSubsystem extends SubsystemBase {
             this
         );
     }
-
     public void driveRobotRelative(ChassisSpeeds speeds) {
     // 1. 轉成每個模組要的角度與速度
     SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
@@ -193,7 +192,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     //---------
 
-    // 辨識用
+    // 搖桿以外的控制方式
     public void drive(double xSpeed, double ySpeed, double turningSpeed, boolean fieldRelative) {
         // 1. 套用SlewRateLimiter
         double xSpd = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec;
@@ -209,7 +208,7 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(moduleStates);
     }
-    //
+    //---------
 
     @Override
     public void periodic() {
