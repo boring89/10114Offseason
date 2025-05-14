@@ -119,4 +119,25 @@ public final class Constants {
     public static final double kDeadband = 0.1;
     public static final double kTargetY = 0.0;
   }
+
+  public static final class ElevatorConstants {
+    public static final double kL1 = 0.0;
+    public static final double kL2 = 0.0;
+    public static final double kL3 = 0.0;
+    public static final double kL4 = 0.0;
+  }
+
+  public static final class ShooterConstants {
+    public static final double kIRVoltage = 0;
+
+    public static final double kL2Angle = 0.0;
+    public static final double kL3Angle = 0.0;
+    public static final double kL4Angle = 0.0;
+
+    public static final double kSafeHeight = 0.0;
+  }
+ 
+  public static final class ClimberConstants {
+    public static final double ClimbPosition = 0.0;
+  }
 }
