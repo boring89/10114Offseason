@@ -4,7 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.Drivetain.SwerveSubsystem;
+import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
 import frc.robot.subsystems.Vision.Kria;
 
 public class CoralDetectCmd extends Command {

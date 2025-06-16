@@ -8,7 +8,6 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -21,8 +20,8 @@ import frc.robot.commands.Mechanism.Shooter.RotationCmd;
 import frc.robot.commands.Mechanism.Shooter.ShooterCmd;
 import frc.robot.commands.Vision.LeftReefCmd;
 import frc.robot.commands.Vision.RightReefCmd;
-import frc.robot.subsystems.Drivetain.SwerveSubsystem;
-import frc.robot.subsystems.Mechanism.Elevator;
+import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
+import frc.robot.subsystems.Mechanism.Arm;
 import frc.robot.subsystems.Mechanism.Shooter;
 import frc.robot.subsystems.Vision.Limelight;
 
@@ -31,7 +30,7 @@ public class RobotContainer {
 
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final Limelight limelight = new Limelight();
-  private final Elevator elevator = new Elevator();
+  private final Arm elevator = new Arm();
   private final Shooter shooter = new Shooter();
   
 
@@ -67,7 +66,7 @@ public class RobotContainer {
   }
 
 
-  public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Example Auto");
+  public PathPlannerAuto getAutonomousCommand() {
+    return new PathPlannerAuto("New Auto");
   }
 }

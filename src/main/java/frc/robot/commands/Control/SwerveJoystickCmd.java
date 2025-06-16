@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.Drivetain.SwerveSubsystem;
+import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
 
 public class SwerveJoystickCmd extends Command {
     
@@ -41,6 +41,7 @@ public class SwerveJoystickCmd extends Command {
 
     @Override
     public void initialize() {
+        swerveSubsystem.resetEncoder();
     }
 
     @Override
