@@ -1,56 +1,58 @@
 package frc.robot.subsystems.Mechanism;
 
-import javax.sound.sampled.DataLine;
-
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 
 public class Arm extends SubsystemBase {
     
     private final TalonFX ArmMotor_1, ArmMotor_2, ElevatorMotor;
-    private final PIDController ElevatorController, ArmController;
-    private int Level = 0, targetLevel = 4;
-    
+    private final PIDController ElevatorController, ArmController;    
+    private double[] position;
+
     public Arm() {
-        ArmMotor_1 = new TalonFX(15);
-        ArmMotor_2 = new TalonFX(16);
-        ArmMotor_2.setControl(new Follower(15, true));
-        ElevatorController = new PIDController(0.1, 0, 0);
+
+        ElevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorPort);
+
+        ArmMotor_1 = new TalonFX(ElevatorConstants.kAngleMotorPort[0]);
+        ArmMotor_2 = new TalonFX(ElevatorConstants.kAngleMotorPort[1]);
+
+        ArmMotor_2.setControl(new Follower(
+            ElevatorConstants.kAngleMotorPort[0], true));
+
+        ElevatorController = new PIDController(
+            ElevatorConstants.kElevatorPID[0],
+            ElevatorConstants.kElevatorPID[1],
+            ElevatorConstants.kElevatorPID[2]);
+        ArmController = new PIDController(
+            ElevatorConstants.kAnglePID[0],
+            ElevatorConstants.kAnglePID[1],
+            ElevatorConstants.kAnglePID[2]
+        );
+
     }
 
-    public double getPosition() {
-        return LMotor.getPosition().getValueAsDouble();
+    public double[] getPosition() {
+        position[0] = ElevatorMotor.getPosition().getValueAsDouble();
+        position[1] = ArmMotor_1.getPosition().getValueAsDouble();
+        
+        return position;
     }
 
-    public void setPosition(double position) {
-        LMotor.set(ElevatorController.calculate(getPosition(), position));
+    public void setPosition(double[] targetPosition, int level) {
+        ElevatorMotor.set(ElevatorController.calculate(
+            getPosition()[0], ElevatorConstants.kElevatorPosition[level]));
+
+        ArmMotor_1.set(ArmController.calculate(
+            getPosition()[1], ElevatorConstants.kArmPosition[level])
+        );
     }
 
-    public int getLevel() {
-        return Level;
+    public void resetEncoders() {
+        ArmMotor_1.setPosition(0);
+        ElevatorMotor.setPosition(0);
     }
-
-    public void Levelup () {
-        if(targetLevel < 4) {
-            targetLevel++;
-        }
-    }
-
-    public void Leveldown() {
-        if(targetLevel > 1) {
-            targetLevel--;
-        }
-    }
-
-    public void ActivateLevel() {
-        Level = targetLevel;
-    }
-
-    public void toIntake() {
-        Level = 0;
-    }
-    
 }
