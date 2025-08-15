@@ -52,9 +52,6 @@ public class SwerveModule {
         driveMotor = new SparkFlex(driveMotorId, MotorType.kBrushless);                 // NEO為無刷，千萬不要設錯，不然會燒掉
         turningMotor = new SparkMax(turningMotorId, MotorType.kBrushless);
 
-        // driveSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(driveMotorId));
-        // turningSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(turningMotorId));
-
         FlexConf// 駕駛馬達之設定(SparkFlex)
             .idleMode(IdleMode.kBrake)                                              // 煞車模式，在不給動力時有阻力維持停止，確保機器不會滑行
             .smartCurrentLimit(50)                                       // 電流限制，調高雖然能提升性能，但馬達會承受不住燒掉，詳細數值要問全向輪供應商
@@ -121,6 +118,7 @@ public class SwerveModule {
     public double getTurningVelocity() {
         return turningEncoder.getVelocity();
     }
+    
 
     // 取得絕對編碼器數值(角度)
 
@@ -161,8 +159,8 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            driveEncoder.getPosition(),
-            Rotation2d.fromRadians(getTurningPosition())
+            -driveEncoder.getPosition(),
+            Rotation2d.fromRadians(-getTurningPosition())
         );
     }
 

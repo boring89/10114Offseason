@@ -4,13 +4,10 @@
 
 package frc.robot;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.helps.Swervwsetpoint.ModuleLimits;
+import frc.robot.util.Swerve.ModuleLimits;
 
 public final class Constants {
   
@@ -86,11 +83,11 @@ public final class Constants {
       public static final double kBLDriveAbsoluteEncoderOffsetRad = 0;
       public static final double kBRDriveAbsoluteEncoderOffsetRad = 0;
 
-      public static final double kPhysicalMaxSpeedMetersPerSecond = 6;
+      public static final double kPhysicalMaxSpeedMetersPerSecond = 2;
       public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 7 * 2 * Math.PI;
       public static final double kTeleDriveMaxSpeedMeterPerSec = (kPhysicalMaxSpeedMetersPerSecond);
       public static final double kTeleDriveMaxAngularSpeedRadiansPerSec = 7;
-      public static final double kTeleDriveMaxAccelerationUnitsPerSec = 8;
+      public static final double kTeleDriveMaxAccelerationUnitsPerSec = 5;
 
       
 	public static final ModuleLimits moduleLimitsFree =
@@ -114,25 +111,6 @@ public final class Constants {
 
 
     public static final double kDeadband = 0.06;
-  }
-
-  public static final class ReefConstants {
-    public static final Map<Integer, int[]> ReefMap = new HashMap<>();
-
-    static {
-      ReefMap.put(11, new int[] {7, 18});
-      ReefMap.put(12, new int[] {7, 18});
-      ReefMap.put(16, new int[] {8, 17});
-      ReefMap.put(15, new int[] {8, 17});
-      ReefMap.put(14, new int[] {9, 22});
-      ReefMap.put(13, new int[] {9, 22});
-      ReefMap.put(10, new int[] {10, 21});
-      ReefMap.put(9, new int[] {10, 21});
-      ReefMap.put(5, new int[] {11, 20});
-      ReefMap.put(6, new int[] {11, 20});
-      ReefMap.put(7, new int[] {6, 19});
-      ReefMap.put(8, new int[] {6, 19});
-    }
   }
 
   public static final class MotorConstants {

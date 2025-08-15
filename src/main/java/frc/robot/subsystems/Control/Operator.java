@@ -2,7 +2,6 @@ package frc.robot.subsystems.Control;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ReefConstants;
 
 public class Operator extends SubsystemBase {
     
@@ -37,14 +36,6 @@ public class Operator extends SubsystemBase {
         return isLeft;
     }
 
-    public Number getReefID() {
-
-        if (isRed) {
-            return Integer.valueOf(ReefConstants.ReefMap.get(Integer.valueOf(reef))[0]);
-        }else {
-            return Integer.valueOf(ReefConstants.ReefMap.get(Integer.valueOf(reef))[0]);
-        }
-    }
 
     public int getReef() {
         return reef;

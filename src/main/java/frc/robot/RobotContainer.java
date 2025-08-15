@@ -11,12 +11,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.kinematics.SwerveModuleState;
 // import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 // import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.Control.Drivetrain.SwerveJoystickCmd;
+import frc.robot.commands.Control.Drivetrain.SwerveControlCmd;
 import frc.robot.commands.Vision.AutoAlignCmd;
 import frc.robot.subsystems.Control.Operator;
 // import frc.robot.commands.Control.Level.LevelControlCmd;
@@ -46,16 +47,13 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
-      swerveSubsystem, limelight,
+    swerveSubsystem.setDefaultCommand(new SwerveControlCmd(
+      swerveSubsystem,
       () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis), 
       () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis), 
       () -> driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
-      () -> operator.getAngle(),
-      () -> true, 
-      () -> limelight.getReefID() == operator.getReefID(),
-      () -> driverJoystick.getRawButton(2),
-      () -> driverJoystick.getRawAxis(2))
+      () -> true,
+      () -> 0.0)
       );
       
     configureBindings();
@@ -74,7 +72,7 @@ public class RobotContainer {
 
   }
 
-  public PathPlannerAuto getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
-  }
+  public Command getAutonomousCommand() {
+    return null;
+  } 
 }
