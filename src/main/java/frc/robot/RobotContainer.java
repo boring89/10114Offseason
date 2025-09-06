@@ -4,22 +4,22 @@
 
 package frc.robot;
 
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.kinematics.SwerveModuleState;
 // import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 // import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Control.Drivetrain.SwerveControlCmd;
-import frc.robot.commands.Vision.AutoAlignCmd;
-import frc.robot.subsystems.Control.Operator;
+import frc.robot.subsystems.Arm.ArmControl;
+import frc.robot.subsystems.Arm.Elevator;
+import frc.robot.subsystems.Arm.Hand;
+import frc.robot.subsystems.Arm.Pivot;
+import frc.robot.subsystems.Control.Driver;
+// import frc.robot.commands.Vision.AutoAlignCmd;
 // import frc.robot.commands.Control.Level.LevelControlCmd;
 // import frc.robot.commands.Control.Level.ReturnLevel;
 // import frc.robot.commands.Control.Level.SetArmLevel;
@@ -29,50 +29,74 @@ import frc.robot.subsystems.Control.Operator;
 // import frc.robot.commands.Mechanism.Arm.ElevatorCmd;
 // import frc.robot.commands.Mechanism.Intake.IntakeArmCmd;
 // import frc.robot.commands.Vision.AutoAlignCmd;
-import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
-// import frc.robot.subsystems.Mechanism.Arm;
-// import frc.robot.subsystems.Mechanism.Intake;
-// import frc.robot.subsystems.Vision.Limelight;
-import frc.robot.subsystems.Vision.Limelight;
 
+import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
+import frc.robot.subsystems.Vision.AutoAlignL;
+import frc.robot.subsystems.Vision.AutoAlignR;
 
 public class RobotContainer {
 
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final Limelight limelight = new Limelight();
-  private final Operator operator = new Operator();
+  private final Pivot pivot = new Pivot();
+  private final Hand hand = new Hand();
+  private final Elevator elevator = new Elevator();
 
-  private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
-  private final Joystick operatorJoystick = new Joystick(OIConstants.kOperatorControllerPort);
+  private final ArmControl arm = new ArmControl(pivot, elevator, hand);
 
+  private final AutoAlignL alignL = new AutoAlignL();
+  private final AutoAlignR alignR = new AutoAlignR();
+
+  private final Driver driver = new Driver();
 
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(new SwerveControlCmd(
-      swerveSubsystem,
-      () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis), 
-      () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis), 
-      () -> driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
-      () -> true,
-      () -> 0.0)
-      );
-      
+        swerveSubsystem,
+        () -> -driver.getLeftY(),
+        () -> driver.getLeftX(),
+        () -> driver.getRightX(),
+        () -> true));
+
     configureBindings();
   }
 
   private void configureBindings() {
-    new JoystickButton(driverJoystick, 2).onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading())
-      .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, swerveSubsystem.getRotation2d())))));
 
-    for (int j = 0; j < OIConstants.kOperatorReefSelecterButtonId.length; j++) {
-      final int reefIndex = j;
-      new JoystickButton(operatorJoystick, OIConstants.kOperatorReefSelecterButtonId[j])
-        .onTrue(new InstantCommand(() -> operator.selectReef(reefIndex)).alongWith(new AutoAlignCmd(swerveSubsystem, limelight, operator)));
-    }
+    // Swerve
+    driver.zeroHeading().onTrue(
+        new InstantCommand(() -> swerveSubsystem.zeroHeading())
+            .andThen(new InstantCommand(
+                () -> swerveSubsystem.resetOdometry(
+                    new Pose2d(0, 0, swerveSubsystem.getRotation2d())))));
 
+    driver.changeMode().onTrue(new InstantCommand(() -> arm.ChangeMode()));
 
+    // Arm Control
+    driver.a().whileTrue(arm.ButtonA()).onFalse(arm.AReleased());
+    driver.b().whileTrue(arm.ButtonB()).onFalse(arm.BReleased());
+    driver.x().whileTrue(arm.ButtonX()).onFalse(arm.XReleased());
+    driver.y().whileTrue(arm.ButtonY()).onFalse(arm.YReleased());
+
+    driver.LeftTrigger().whileTrue(arm.LeftTriggerPressed())
+        .onFalse(arm.LeftTriggerReleased());
+
+    driver.RightTrigger().onTrue(arm.RightTriggerPressed())
+        .onFalse(arm.RightTriggerReleased());
+
+    driver.LBumper().whileTrue(
+        new SwerveControlCmd(swerveSubsystem,
+            () -> -alignL.yOut(),
+            () -> alignL.xOut(),
+            () -> alignL.rotOut(),
+            () -> false));
+    driver.RBumper().whileTrue(
+        new SwerveControlCmd(swerveSubsystem,
+            () -> -alignR.yOut(),
+            () -> alignR.xOut(),
+            () -> alignR.rotOut(),
+            () -> false));
   }
 
-  public Command getAutonomousCommand() {
-    return null;
-  } 
+  public PathPlannerAuto getAutonomousCommand() {
+    return new PathPlannerAuto("New Auto");
+  }
 }

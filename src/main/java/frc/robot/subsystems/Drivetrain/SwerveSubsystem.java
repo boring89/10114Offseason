@@ -1,9 +1,9 @@
 package frc.robot.subsystems.Drivetrain;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -15,7 +15,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -33,14 +32,12 @@ import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
-
 public class SwerveSubsystem extends SubsystemBase {
 
     private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
     private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("New Path");
-
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(DriveConstants.moduleLocations);
 
@@ -132,10 +129,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // Generate the next speeds for the robot
         ChassisSpeeds speeds = new ChassisSpeeds(
-            sample.vx + xController.calculate(pose.getX(), sample.x),
-            sample.vy + yController.calculate(pose.getY(), sample.y),
-            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
-        );
+                sample.vx + xController.calculate(pose.getX(), sample.x),
+                sample.vy + yController.calculate(pose.getY(), sample.y),
+                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
         // Apply the generated speeds
         runVelocity(speeds);
@@ -155,10 +151,55 @@ public class SwerveSubsystem extends SubsystemBase {
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
+
     public Rotation2d turngetRotation2d() {
         return Rotation2d.fromDegrees(-getHeading());
     }
     // __________自動模式__________
+
+    public void PathPlannerInit() {
+        // Load the RobotConfig from the GUI settings. You should probably
+        // store this in your Constants file
+        RobotConfig config;
+        try {
+            System.out.println("Robot Config is loaded");
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            System.err.println("Fuck! Robot Config cannot load");
+            config = null;
+            e.printStackTrace();
+        }
+
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> runVelocity(speeds), // Method that will drive the robot given ROBOT
+                                                                      // RELATIVE ChassisSpeeds. Also optionally outputs
+                                                                      // individual module feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                                // holonomic drive trains
+                        new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(1.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red
+                    // alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
+    }
 
     // 取得模組位置 (陀螺儀角度、模組位置)
 
@@ -172,7 +213,7 @@ public class SwerveSubsystem extends SubsystemBase {
         odometer.resetPosition(getRotation2d(), getModulePosition(), pose);
     }
 
-    public void setOdometry(){
+    public void setOdometry() {
         odometer.resetPose(trajectory.get().getInitialPose(false).get());
     }
 

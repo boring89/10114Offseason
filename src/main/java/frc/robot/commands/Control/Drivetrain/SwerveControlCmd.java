@@ -13,7 +13,7 @@ import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
 public class SwerveControlCmd extends Command {
     
     private final SwerveSubsystem swerveSubsystem;
-    private final Supplier<Double> xSpdFunc, ySpdFunc, turningSpdFunc, breakFunc;
+    private final Supplier<Double> xSpdFunc, ySpdFunc, turningSpdFunc;
     private final Supplier<Boolean> fieldOrientedFunc;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;       //搖桿加速度限制
 
@@ -25,13 +25,12 @@ public class SwerveControlCmd extends Command {
     
     public SwerveControlCmd(SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunc, Supplier<Double> ySpdFunc, Supplier<Double> turningSpdFunc,
-            Supplier<Boolean> fieldOrientedFunc, Supplier<Double> breakFunc) {
+            Supplier<Boolean> fieldOrientedFunc) {
 
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunc = xSpdFunc;
         this.ySpdFunc = ySpdFunc;
         this.turningSpdFunc = turningSpdFunc;
-        this.breakFunc = breakFunc;
         this.fieldOrientedFunc = fieldOrientedFunc;
 
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSec);
@@ -52,7 +51,6 @@ public class SwerveControlCmd extends Command {
         double ySpd;
         double turningSpd;
 
-        double breakswerve = 1.0 - breakFunc.get();
 
         xSpd = xSpdFunc.get();
         ySpd = ySpdFunc.get();
@@ -66,8 +64,8 @@ public class SwerveControlCmd extends Command {
         turningSpd = Math.abs(turningSpd) > OIConstants.kDeadband ? turningSpd : 0.0;
 
         // 3. 平滑化駕駛
-        xSpd = xLimiter.calculate(xSpd) * (DriveConstants.kTeleDriveMaxSpeedMeterPerSec) * breakswerve;
-        ySpd = yLimiter.calculate(ySpd) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec  * breakswerve;
+        xSpd = xLimiter.calculate(xSpd) * (DriveConstants.kTeleDriveMaxSpeedMeterPerSec);
+        ySpd = yLimiter.calculate(ySpd) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec;
         turningSpd = turningLimiter.calculate(turningSpd)
                 * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSec;
         
