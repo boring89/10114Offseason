@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Vision;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -7,7 +8,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AutoAlignL extends SubsystemBase {
+public class Limelight_Left extends SubsystemBase {
 
     private final NetworkTable Limelight;
     private final NetworkTableEntry x, a;
@@ -15,8 +16,8 @@ public class AutoAlignL extends SubsystemBase {
     private final PIDController xController, yController, rotController;
     private double xOut, yOut, rotOut;
 
-    public AutoAlignL() {
-        Limelight = NetworkTableInstance.getDefault().getTable("limelight-right");
+    public Limelight_Left() {
+        Limelight = NetworkTableInstance.getDefault().getTable("limelight-left");
         x = Limelight.getEntry("tx");
         a = Limelight.getEntry("ta");
         xController = new PIDController(0.012345, 0, 0.00001);
@@ -57,7 +58,10 @@ public class AutoAlignL extends SubsystemBase {
     public void periodic() {
 
         if (Math.abs(getX()) >= 0.5) {
-            xOut = xController.calculate(getX(), -7.9);
+            xOut = xController.calculate(getX(), 13.98 
+            
+            
+            );
         } else {
             xOut = 0;
         }
@@ -75,11 +79,13 @@ public class AutoAlignL extends SubsystemBase {
         }
 
         pose = Limelight.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
-    
 
-        SmartDashboard.putNumber("LX", getX());
-        SmartDashboard.putNumber("LY", getA());
+        SmartDashboard.putNumber("RX", getX());
+        SmartDashboard.putNumber("RY", getA());
 
-        SmartDashboard.putNumber("LP", getPose());
+        SmartDashboard.putNumber("RP", getPose());
+
+
+
     }
 }

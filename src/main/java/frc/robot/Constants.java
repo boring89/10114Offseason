@@ -81,7 +81,7 @@ public final class Constants {
     public static final double kBLDriveAbsoluteEncoderOffsetRad = 0;
     public static final double kBRDriveAbsoluteEncoderOffsetRad = 0;
 
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 3.5;
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 1;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 7 * 2 * Math.PI;
     public static final double kTeleDriveMaxSpeedMeterPerSec = kPhysicalMaxSpeedMetersPerSecond;
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSec = 7;
@@ -109,7 +109,7 @@ public final class Constants {
   }
 
   public static final class Positions { // {pivot, Hand, Elevator}
-    public static final double[] kGroundCoralIntake = { 0.3, 6.5, 1.5 };
+    public static final double[] kGroundCoralIntake = { 0.0, 7, 0.45 };
     public static final double[] kGroundAlgaeIntake = { 4.6, 0.0, 3.6 };
     public static final double[] kLowReefAlgaeIntake = { 17.83, 0.0, 4.1 };
     public static final double[] kHighReefAlgaeIntake = { 20.2, 0.0, 9.5 };

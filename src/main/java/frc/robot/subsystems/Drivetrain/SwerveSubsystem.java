@@ -75,6 +75,8 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }).start(); // 非同步執行，避免阻塞主線程
 
+        PathPlannerInit();
+
         // 定義每一個模組
         FL = new SwerveModule(
                 DriveConstants.kFLDriveMotorPort, // 駕駛馬達編號
@@ -181,8 +183,8 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                       // individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                                 // holonomic drive trains
-                        new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(1.0, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {

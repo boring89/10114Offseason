@@ -42,17 +42,10 @@ public class Hand extends SubsystemBase {
         resetEncoder();
     }
 
-    // public Command intake(boolean isInverted) {
-    //     if (isInverted == false) {
-    //         return run(() -> GripMotor.set(0.5));
-    //     } else {
-    //         return run(() -> GripMotor.set(-0.5));
-    //     }
-    // }
-
     public Command intake(double Spd) {
         return run(() -> GripMotor.set(Spd));
     }
+
 
     public Command shoot(Supplier<Double> Spd) {
         return run(() -> this.GripMotor.set(Spd.get()));

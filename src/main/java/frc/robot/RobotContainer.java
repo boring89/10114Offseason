@@ -31,8 +31,8 @@ import frc.robot.subsystems.Control.Driver;
 // import frc.robot.commands.Vision.AutoAlignCmd;
 
 import frc.robot.subsystems.Drivetrain.SwerveSubsystem;
-import frc.robot.subsystems.Vision.AutoAlignL;
-import frc.robot.subsystems.Vision.AutoAlignR;
+import frc.robot.subsystems.Vision.Limelight_Right;
+import frc.robot.subsystems.Vision.Limelight_Left;
 
 public class RobotContainer {
 
@@ -43,8 +43,8 @@ public class RobotContainer {
 
   private final ArmControl arm = new ArmControl(pivot, elevator, hand);
 
-  private final AutoAlignL alignL = new AutoAlignL();
-  private final AutoAlignR alignR = new AutoAlignR();
+  private final Limelight_Right alignL = new Limelight_Right();
+  private final Limelight_Left alignR = new Limelight_Left();
 
   private final Driver driver = new Driver();
 
@@ -97,6 +97,6 @@ public class RobotContainer {
   }
 
   public PathPlannerAuto getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("New New Auto");
   }
 }

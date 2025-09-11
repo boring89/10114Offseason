@@ -111,7 +111,7 @@ public class ArmControl extends SubsystemBase {
     public Command RightTriggerPressed() {
         return Commands.either(
             this.hand.shoot(() -> ShootSpd), 
-            this.hand.shoot(() -> -ShootSpd), 
+            this.hand.shoot(() -> ShootSpd), 
             () -> CoralMode);
     }
 
@@ -133,13 +133,13 @@ public class ArmControl extends SubsystemBase {
     }
 
     public Command Intake() {
-        return this.hand.intake(0.7).until(() -> this.hand.isCoralIn())
+        return this.hand.intake(0.65).until(() -> this.hand.isCoralIn())
                 // .andThen(this.hand.intake(true)).withTimeout(0.5)
                 .andThen(this.hand.stopMotor());
     }
 
     public Command AlgaeIntake() {
-        return this.hand.intake(-0.7);
+        return this.hand.intake(-0.5);
     }
 
     public Command toWait() {
@@ -213,6 +213,7 @@ public class ArmControl extends SubsystemBase {
 
     public Command toProcessor() {
         return Commands.parallel(
+                run(() -> ShootSpd = 0.5),
                 this.pivot.setPoint(Positions.kProcessor[0]),
                 this.elevator.setPoint(Positions.kProcessor[2]),
                 this.hand.setPoint(Positions.kProcessor[1]));
@@ -220,6 +221,7 @@ public class ArmControl extends SubsystemBase {
 
     public Command toNet() {
         return Commands.parallel(
+                run(() -> ShootSpd = 0.5),
                 this.pivot.setPoint(Positions.kNet[0]),
                 this.elevator.setPoint(Positions.kNet[2]),
                 this.hand.setPoint(Positions.kNet[1]));
