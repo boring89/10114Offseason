@@ -71,10 +71,17 @@ public class RobotContainer {
     driver.changeMode().onTrue(new InstantCommand(() -> arm.ChangeMode()));
 
     // Arm Control
-    driver.a().whileTrue(arm.ButtonA()).onFalse(arm.AReleased());
-    driver.b().whileTrue(arm.ButtonB()).onFalse(arm.BReleased());
-    driver.x().whileTrue(arm.ButtonX()).onFalse(arm.XReleased());
-    driver.y().whileTrue(arm.ButtonY()).onFalse(arm.YReleased());
+    
+    // driver.a().whileTrue(arm.ButtonA()).onFalse(arm.AReleased());
+    // driver.b().whileTrue(arm.ButtonB()).onFalse(arm.BReleased());
+    // driver.x().whileTrue(arm.ButtonX()).onFalse(arm.XReleased());
+    // driver.y().whileTrue(arm.ButtonY()).onFalse(arm.YReleased());
+
+    driver.a().whileTrue(elevator.down());
+    driver.y().whileTrue(elevator.up());
+    driver.b().whileTrue(pivot.down());
+    driver.x().whileTrue(pivot.up());
+    
 
     driver.LeftTrigger().whileTrue(arm.LeftTriggerPressed())
         .onFalse(arm.LeftTriggerReleased());
@@ -82,18 +89,21 @@ public class RobotContainer {
     driver.RightTrigger().onTrue(arm.RightTriggerPressed())
         .onFalse(arm.RightTriggerReleased());
 
-    driver.LBumper().whileTrue(
-        new SwerveControlCmd(swerveSubsystem,
-            () -> -alignL.yOut(),
-            () -> alignL.xOut(),
-            () -> alignL.rotOut(),
-            () -> false));
-    driver.RBumper().whileTrue(
-        new SwerveControlCmd(swerveSubsystem,
-            () -> -alignR.yOut(),
-            () -> alignR.xOut(),
-            () -> alignR.rotOut(),
-            () -> false));
+    // driver.LBumper().whileTrue(
+    //     new SwerveControlCmd(swerveSubsystem,
+    //         () -> -alignL.yOut(),
+    //         () -> alignL.xOut(),
+    //         () -> alignL.rotOut(),
+    //         () -> false));
+    // driver.RBumper().whileTrue(
+    //     new SwerveControlCmd(swerveSubsystem,
+    //         () -> -alignR.yOut(),
+    //         () -> alignR.xOut(),
+    //         () -> alignR.rotOut(),
+    //         () -> false));
+
+    driver.LBumper().whileTrue(hand.up());
+    driver.RBumper().whileTrue(hand.down());
   }
 
   public PathPlannerAuto getAutonomousCommand() {

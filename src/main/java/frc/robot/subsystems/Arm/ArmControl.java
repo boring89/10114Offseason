@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Arm;
 
+import java.net.PortUnreachableException;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,7 +27,6 @@ public class ArmControl extends SubsystemBase {
     }
 
     public Command ButtonB() {
-        // return toLevel2();
         return Commands.either(
             toLevel2(), 
             toProcessor(), 
@@ -49,7 +50,6 @@ public class ArmControl extends SubsystemBase {
     }
 
     public Command AReleased() {
-
         return Commands.either(
                 toCoralStand(),
                 toAlgaeStand()
@@ -150,81 +150,100 @@ public class ArmControl extends SubsystemBase {
     }
 
     public Command toGroundCoralIntake() {
-        return Commands.parallel(
-                this.hand.setPoint(Positions.kGroundCoralIntake[1]),
-                this.elevator.setPoint(Positions.kGroundCoralIntake[2]),
+        return Commands.sequence(
+                Commands.parallel(
+                    this.hand.setPoint(Positions.kGroundCoralIntake[1]),
+                    this.elevator.setPoint(Positions.kGroundCoralIntake[2])),
                 this.pivot.setPoint(Positions.kGroundCoralIntake[0]))
                 .withTimeout(0.5);
     }
 
     public Command toGroundAlgaeIntake() {
-        return Commands.parallel(
-                this.elevator.setPoint(Positions.kGroundAlgaeIntake[2]),
-                this.pivot.setPoint(Positions.kGroundAlgaeIntake[0]),
-                this.hand.setPoint(Positions.kGroundAlgaeIntake[1]))
+        return Commands.sequence(
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kGroundAlgaeIntake[2]),
+                    this.hand.setPoint(Positions.kGroundAlgaeIntake[1])
+                    ),
+                this.pivot.setPoint(Positions.kGroundAlgaeIntake[0]))
                 .withTimeout(0.5);
     }
 
     public Command toLevel1() {
-        return Commands.parallel(
-                run(() -> ShootSpd = 0.5),
-                this.elevator.setPoint(Positions.kL1[2]),
-                this.pivot.setPoint(Positions.kL1[0]),
-                this.hand.setPoint(Positions.kL1[1]));
+        return Commands.sequence(
+                run(() -> ShootSpd = 0.5).withTimeout(0.000001),
+                this.pivot.setPoint(Positions.kL1[0]).until(() -> pivot.isInSetPoint()),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kL1[2]),
+                    this.hand.setPoint(Positions.kL1[1])
+                ));
     }
 
     public Command toLevel2() {
-        return Commands.parallel(
-                run(() -> ShootSpd = 0.5),
-                this.elevator.setPoint(Positions.kL2[2]),
-                this.pivot.setPoint(Positions.kL2[0]),
-                this.hand.setPoint(Positions.kL2[1]));
+        return Commands.sequence(
+                run(() -> ShootSpd = 0.5).withTimeout(0.000001),
+                this.pivot.setPoint(Positions.kL2[0]).until(() -> pivot.isInSetPoint()),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kL2[2]),
+                    this.hand.setPoint(Positions.kL2[1])
+                ));
     }
 
     public Command toLevel3() {
-        return Commands.parallel(
-                run(() -> ShootSpd = -0.5),
-                this.pivot.setPoint(Positions.kL3[0]),
-                this.elevator.setPoint(Positions.kL3[2]),
-                this.hand.setPoint(Positions.kL3[1]));
+        return Commands.sequence(
+                run(() -> ShootSpd = -0.5).withTimeout(0.000001),
+                this.pivot.setPoint(Positions.kL3[0]).until(() -> pivot.isInSetPoint()),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kL3[2]),
+                    this.hand.setPoint(Positions.kL3[1])
+                ));
     }
 
     public Command toLevel4() {
-        return Commands.parallel(
-                run(() -> ShootSpd = -0.5),
-                this.pivot.setPoint(Positions.kL4[0]),
-                this.elevator.setPoint(Positions.kL4[2]),
-                this.hand.setPoint(Positions.kL4[1]));
+        return Commands.sequence(
+                run(() -> ShootSpd = -0.5).withTimeout(0.000001),
+                this.pivot.setPoint(Positions.kL4[0]).until(() -> pivot.isInSetPoint()),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kL4[2]),
+                    this.hand.setPoint(Positions.kL4[1])
+                ));
     }
 
     public Command toLowReefAlgaeIntake() {
-        return Commands.parallel(
-                this.pivot.setPoint(Positions.kLowReefAlgaeIntake[0]),
-                this.elevator.setPoint(Positions.kLowReefAlgaeIntake[2]),
-                this.hand.setPoint(Positions.kLowReefAlgaeIntake[1]));
+        return Commands.sequence(
+                this.pivot.setPoint(Positions.kLowReefAlgaeIntake[0]).until(() -> pivot.isInSetPoint()),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kLowReefAlgaeIntake[2]),
+                    this.hand.setPoint(Positions.kLowReefAlgaeIntake[1])
+                ));
     }
 
     public Command toHighReefAlgaeIntake() {
-        return Commands.parallel(
-                this.pivot.setPoint(Positions.kHighReefAlgaeIntake[0]),
-                this.elevator.setPoint(Positions.kHighReefAlgaeIntake[2]),
-                this.hand.setPoint(Positions.kHighReefAlgaeIntake[1]));
+        return Commands.sequence(
+                this.pivot.setPoint(Positions.kHighReefAlgaeIntake[0]).until(() -> pivot.isInSetPoint()),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kHighReefAlgaeIntake[2]),
+                    this.hand.setPoint(Positions.kHighReefAlgaeIntake[1])
+                ));
     }
 
     public Command toProcessor() {
-        return Commands.parallel(
-                run(() -> ShootSpd = 0.5),
-                this.pivot.setPoint(Positions.kProcessor[0]),
-                this.elevator.setPoint(Positions.kProcessor[2]),
-                this.hand.setPoint(Positions.kProcessor[1]));
+        return Commands.sequence(
+                run(() -> ShootSpd = 0.5).withTimeout(0.000001),
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kProcessor[2]),
+                    this.hand.setPoint(Positions.kProcessor[1])),
+                this.pivot.setPoint(Positions.kProcessor[0]).until(() -> pivot.isInSetPoint()));
     }
 
     public Command toNet() {
-        return Commands.parallel(
-                run(() -> ShootSpd = 0.5),
+        return Commands.sequence(
+                run(() -> ShootSpd = 0.5).withTimeout(0.000001),
                 this.pivot.setPoint(Positions.kNet[0]),
-                this.elevator.setPoint(Positions.kNet[2]),
-                this.hand.setPoint(Positions.kNet[1]));
+                Commands.parallel(
+                    this.elevator.setPoint(Positions.kNet[2]),
+                    this.hand.setPoint(Positions.kNet[1])
+                )
+        );
     }
 
     public Command toCoralStand() {
@@ -247,9 +266,19 @@ public class ArmControl extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        this.pivot.calculateAngle();
+        this.hand.calculateAngle(this.pivot.getAngle());
+
         this.isCoralIn = this.hand.isCoralIn();
+
         SmartDashboard.putBoolean("coral", isCoralIn);
         SmartDashboard.putBoolean("coralMode", CoralMode);
         SmartDashboard.putNumber("ShootSpeed", ShootSpd);
+        SmartDashboard.putNumber("PivotFFAngle", this.pivot.getAngle());
+        SmartDashboard.putNumber("HandFFAngle", this.hand.getAngle());
+
+        
+        
     }
 }

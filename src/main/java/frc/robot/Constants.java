@@ -105,7 +105,8 @@ public final class Constants {
   }
 
   public static final class ArmConstnats {
-    public static final double kGearRatio = 123.456789;
+    public static final double kPivotGearRatio = 123.456789;
+    public static final double kHandGearRatio = 48.0 / 9.0 * 40.0 / 15.0 * 40.0 / 15.0;
   }
 
   public static final class Positions { // {pivot, Hand, Elevator}
