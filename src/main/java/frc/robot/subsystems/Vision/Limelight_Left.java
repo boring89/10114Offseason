@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Vision;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -20,8 +19,8 @@ public class Limelight_Left extends SubsystemBase {
         Limelight = NetworkTableInstance.getDefault().getTable("limelight-left");
         x = Limelight.getEntry("tx");
         a = Limelight.getEntry("ta");
-        xController = new PIDController(0.012345, 0, 0.00001);
-        yController = new PIDController(0.034567, 0, 0.00005);
+        xController = new PIDController(0.01, 0, 0.0);
+        yController = new PIDController(0.03, 0, 0.0);
         rotController = new PIDController(0.01, 0, 0);
     }
 
@@ -58,9 +57,8 @@ public class Limelight_Left extends SubsystemBase {
     public void periodic() {
 
         if (Math.abs(getX()) >= 0.5) {
-            xOut = xController.calculate(getX(), 13.98 
-            
-            
+            xOut = xController.calculate(getX(), 13.98
+
             );
         } else {
             xOut = 0;
@@ -84,8 +82,6 @@ public class Limelight_Left extends SubsystemBase {
         SmartDashboard.putNumber("RY", getA());
 
         SmartDashboard.putNumber("RP", getPose());
-
-
 
     }
 }

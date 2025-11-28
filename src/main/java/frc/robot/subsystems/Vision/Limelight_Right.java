@@ -19,8 +19,8 @@ public class Limelight_Right extends SubsystemBase {
         Limelight = NetworkTableInstance.getDefault().getTable("limelight-right");
         x = Limelight.getEntry("tx");
         a = Limelight.getEntry("ta");
-        xController = new PIDController(0.012345, 0, 0.00001);
-        yController = new PIDController(0.034567, 0, 0.00005);
+        xController = new PIDController(0.01, 0, 0.0);
+        yController = new PIDController(0.03, 0, 0.0);
         rotController = new PIDController(0.01, 0, 0);
     }
 

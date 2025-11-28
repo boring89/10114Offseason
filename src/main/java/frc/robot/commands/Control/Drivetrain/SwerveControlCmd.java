@@ -2,7 +2,6 @@ package frc.robot.commands.Control.Drivetrain;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +14,6 @@ public class SwerveControlCmd extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final Supplier<Double> xSpdFunc, ySpdFunc, turningSpdFunc;
     private final Supplier<Boolean> fieldOrientedFunc;
-    private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;       //搖桿加速度限制
 
     /*
      *搖桿與機器座標對應：
@@ -32,10 +30,7 @@ public class SwerveControlCmd extends Command {
         this.ySpdFunc = ySpdFunc;
         this.turningSpdFunc = turningSpdFunc;
         this.fieldOrientedFunc = fieldOrientedFunc;
-
-        this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSec);
-        this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSec);
-        this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSec);   
+  
         addRequirements(swerveSubsystem);
     }
 
@@ -64,10 +59,9 @@ public class SwerveControlCmd extends Command {
         turningSpd = Math.abs(turningSpd) > OIConstants.kDeadband ? turningSpd : 0.0;
 
         // 3. 平滑化駕駛
-        xSpd = xLimiter.calculate(xSpd) * (DriveConstants.kTeleDriveMaxSpeedMeterPerSec);
-        ySpd = yLimiter.calculate(ySpd) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec;
-        turningSpd = turningLimiter.calculate(turningSpd)
-                * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSec;
+        xSpd = (xSpd) * (DriveConstants.kTeleDriveMaxSpeedMeterPerSec);
+        ySpd = (ySpd) * DriveConstants.kTeleDriveMaxSpeedMeterPerSec;
+        turningSpd = (turningSpd) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSec;
         
 
 

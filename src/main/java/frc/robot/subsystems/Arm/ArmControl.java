@@ -1,7 +1,5 @@
 package frc.robot.subsystems.Arm;
 
-import java.net.PortUnreachableException;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,11 +24,13 @@ public class ArmControl extends SubsystemBase {
 
     }
 
+    // Joystick Command Methods
+
     public Command ButtonB() {
         return Commands.either(
-            toLevel2(), 
-            toProcessor(), 
-            () -> CoralMode);
+                toLevel2(),
+                toProcessor(),
+                () -> CoralMode);
     }
 
     public Command BReleased() {
@@ -60,9 +60,9 @@ public class ArmControl extends SubsystemBase {
 
     public Command ButtonX() {
         return Commands.either(
-            toLevel3(), 
-            toNet(), 
-            () -> CoralMode);
+                toLevel3(),
+                toNet(),
+                () -> CoralMode);
     }
 
     public Command XReleased() {
@@ -110,18 +110,18 @@ public class ArmControl extends SubsystemBase {
 
     public Command RightTriggerPressed() {
         return Commands.either(
-            this.hand.shoot(() -> ShootSpd), 
-            this.hand.shoot(() -> ShootSpd), 
-            () -> CoralMode);
+                this.hand.shoot(() -> ShootSpd),
+                this.hand.shoot(() -> ShootSpd),
+                () -> CoralMode);
     }
 
     public Command RightTriggerReleased() {
         return Commands.either(
-            this.hand.stopMotor()
-            .andThen(this.toCoralStand()), 
-            this.hand.stopMotor()
-            .andThen(this.toAlgaeStand()), 
-            () -> CoralMode);
+                this.hand.stopMotor()
+                        .andThen(this.toCoralStand()),
+                this.hand.stopMotor()
+                        .andThen(this.toAlgaeStand()),
+                () -> CoralMode);
     }
 
     public void ChangeMode() {
@@ -131,6 +131,8 @@ public class ArmControl extends SubsystemBase {
             CoralMode = true;
         }
     }
+
+    // Arm Command Methods
 
     public Command Intake() {
         return this.hand.intake(0.65).until(() -> this.hand.isCoralIn())
@@ -152,8 +154,9 @@ public class ArmControl extends SubsystemBase {
     public Command toGroundCoralIntake() {
         return Commands.sequence(
                 Commands.parallel(
-                    this.hand.setPoint(Positions.kGroundCoralIntake[1]),
-                    this.elevator.setPoint(Positions.kGroundCoralIntake[2])),
+                        this.hand.setPoint(Positions.kGroundCoralIntake[1]),
+                        this.elevator.setPoint(Positions.kGroundCoralIntake[2]))
+                        .until(() -> hand.isInSetPoint()),
                 this.pivot.setPoint(Positions.kGroundCoralIntake[0]))
                 .withTimeout(0.5);
     }
@@ -161,9 +164,8 @@ public class ArmControl extends SubsystemBase {
     public Command toGroundAlgaeIntake() {
         return Commands.sequence(
                 Commands.parallel(
-                    this.elevator.setPoint(Positions.kGroundAlgaeIntake[2]),
-                    this.hand.setPoint(Positions.kGroundAlgaeIntake[1])
-                    ),
+                        this.elevator.setPoint(Positions.kGroundAlgaeIntake[2]),
+                        this.hand.setPoint(Positions.kGroundAlgaeIntake[1])),
                 this.pivot.setPoint(Positions.kGroundAlgaeIntake[0]))
                 .withTimeout(0.5);
     }
@@ -172,66 +174,56 @@ public class ArmControl extends SubsystemBase {
         return Commands.sequence(
                 run(() -> ShootSpd = 0.5).withTimeout(0.000001),
                 this.pivot.setPoint(Positions.kL1[0]).until(() -> pivot.isInSetPoint()),
-                Commands.parallel(
-                    this.elevator.setPoint(Positions.kL1[2]),
-                    this.hand.setPoint(Positions.kL1[1])
-                ));
+                this.elevator.setPoint(Positions.kL1[2]).until(() -> elevator.isInSetPoint()),
+                this.hand.setPoint(Positions.kL1[1]));
     }
 
     public Command toLevel2() {
         return Commands.sequence(
                 run(() -> ShootSpd = 0.5).withTimeout(0.000001),
                 this.pivot.setPoint(Positions.kL2[0]).until(() -> pivot.isInSetPoint()),
-                Commands.parallel(
-                    this.elevator.setPoint(Positions.kL2[2]),
-                    this.hand.setPoint(Positions.kL2[1])
-                ));
+                this.elevator.setPoint(Positions.kL2[2]).until(() -> elevator.isInSetPoint()),
+                this.hand.setPoint(Positions.kL2[1]));
     }
 
     public Command toLevel3() {
         return Commands.sequence(
                 run(() -> ShootSpd = -0.5).withTimeout(0.000001),
                 this.pivot.setPoint(Positions.kL3[0]).until(() -> pivot.isInSetPoint()),
-                Commands.parallel(
-                    this.elevator.setPoint(Positions.kL3[2]),
-                    this.hand.setPoint(Positions.kL3[1])
-                ));
+                this.elevator.setPoint(Positions.kL3[2]).until(() -> elevator.isInSetPoint()),
+                this.hand.setPoint(Positions.kL3[1]));
     }
 
     public Command toLevel4() {
         return Commands.sequence(
                 run(() -> ShootSpd = -0.5).withTimeout(0.000001),
                 this.pivot.setPoint(Positions.kL4[0]).until(() -> pivot.isInSetPoint()),
-                Commands.parallel(
-                    this.elevator.setPoint(Positions.kL4[2]),
-                    this.hand.setPoint(Positions.kL4[1])
-                ));
+                this.elevator.setPoint(Positions.kL4[2]).until(() -> elevator.isInSetPoint()),
+                this.hand.setPoint(Positions.kL4[1]));
     }
 
     public Command toLowReefAlgaeIntake() {
         return Commands.sequence(
                 this.pivot.setPoint(Positions.kLowReefAlgaeIntake[0]).until(() -> pivot.isInSetPoint()),
                 Commands.parallel(
-                    this.elevator.setPoint(Positions.kLowReefAlgaeIntake[2]),
-                    this.hand.setPoint(Positions.kLowReefAlgaeIntake[1])
-                ));
+                        this.elevator.setPoint(Positions.kLowReefAlgaeIntake[2]),
+                        this.hand.setPoint(Positions.kLowReefAlgaeIntake[1])));
     }
 
     public Command toHighReefAlgaeIntake() {
         return Commands.sequence(
                 this.pivot.setPoint(Positions.kHighReefAlgaeIntake[0]).until(() -> pivot.isInSetPoint()),
                 Commands.parallel(
-                    this.elevator.setPoint(Positions.kHighReefAlgaeIntake[2]),
-                    this.hand.setPoint(Positions.kHighReefAlgaeIntake[1])
-                ));
+                        this.elevator.setPoint(Positions.kHighReefAlgaeIntake[2]),
+                        this.hand.setPoint(Positions.kHighReefAlgaeIntake[1])));
     }
 
     public Command toProcessor() {
         return Commands.sequence(
                 run(() -> ShootSpd = 0.5).withTimeout(0.000001),
                 Commands.parallel(
-                    this.elevator.setPoint(Positions.kProcessor[2]),
-                    this.hand.setPoint(Positions.kProcessor[1])),
+                        this.elevator.setPoint(Positions.kProcessor[2]),
+                        this.hand.setPoint(Positions.kProcessor[1])),
                 this.pivot.setPoint(Positions.kProcessor[0]).until(() -> pivot.isInSetPoint()));
     }
 
@@ -240,17 +232,17 @@ public class ArmControl extends SubsystemBase {
                 run(() -> ShootSpd = 0.5).withTimeout(0.000001),
                 this.pivot.setPoint(Positions.kNet[0]),
                 Commands.parallel(
-                    this.elevator.setPoint(Positions.kNet[2]),
-                    this.hand.setPoint(Positions.kNet[1])
-                )
-        );
+                        this.elevator.setPoint(Positions.kNet[2]),
+                        this.hand.setPoint(Positions.kNet[1])));
     }
 
     public Command toCoralStand() {
-        return Commands.parallel(
-                this.pivot.setPoint(Positions.kCoralStand[0]),
-                this.elevator.setPoint(Positions.kCoralStand[2]),
-                this.hand.setPoint(Positions.kCoralStand[1]));
+        return Commands.sequence(
+                Commands.parallel(
+                        this.elevator.setPoint(Positions.kCoralStand[2]),
+                        this.hand.setPoint(Positions.kCoralStand[1]))
+                        .until(() -> elevator.isInSetPoint()),
+                this.pivot.setPoint(Positions.kCoralStand[0]));
     }
 
     public Command toAlgaeStand() {
@@ -260,25 +252,15 @@ public class ArmControl extends SubsystemBase {
                 this.hand.setPoint(Positions.kAlgaeStand[1]));
     }
 
-    public void initialize() {
-        toAlgaeStand();
-    }
+    // Periodic Method
 
     @Override
     public void periodic() {
 
-        this.pivot.calculateAngle();
-        this.hand.calculateAngle(this.pivot.getAngle());
-
         this.isCoralIn = this.hand.isCoralIn();
 
-        SmartDashboard.putBoolean("coral", isCoralIn);
-        SmartDashboard.putBoolean("coralMode", CoralMode);
+        SmartDashboard.putBoolean("isCoralIn", isCoralIn);
+        SmartDashboard.putBoolean("CoralMode", CoralMode);
         SmartDashboard.putNumber("ShootSpeed", ShootSpd);
-        SmartDashboard.putNumber("PivotFFAngle", this.pivot.getAngle());
-        SmartDashboard.putNumber("HandFFAngle", this.hand.getAngle());
-
-        
-        
     }
 }

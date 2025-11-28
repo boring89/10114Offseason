@@ -81,11 +81,11 @@ public final class Constants {
     public static final double kBLDriveAbsoluteEncoderOffsetRad = 0;
     public static final double kBRDriveAbsoluteEncoderOffsetRad = 0;
 
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 1;
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 4;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 7 * 2 * Math.PI;
     public static final double kTeleDriveMaxSpeedMeterPerSec = kPhysicalMaxSpeedMetersPerSecond;
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSec = 7;
-    public static final double kTeleDriveMaxAccelerationUnitsPerSec = 5;
+    public static final double kTeleDriveMaxAccelerationUnitsPerSec = 9;
 
     public static final ModuleLimits moduleLimitsFree = new ModuleLimits(kPhysicalMaxSpeedMetersPerSecond,
         kTeleDriveMaxAccelerationUnitsPerSec, Units.degreesToRadians(1080.0));
@@ -97,7 +97,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
 
-    public static final double kDeadband = 0.04;
+    public static final double kDeadband = 0.06;
   }
 
   public static final class MotorConstants {
@@ -105,12 +105,11 @@ public final class Constants {
   }
 
   public static final class ArmConstnats {
-    public static final double kPivotGearRatio = 123.456789;
-    public static final double kHandGearRatio = 48.0 / 9.0 * 40.0 / 15.0 * 40.0 / 15.0;
+    public static final double kGearRatio = 123.456789;
   }
 
   public static final class Positions { // {pivot, Hand, Elevator}
-    public static final double[] kGroundCoralIntake = { 0.0, 7, 0.45 };
+    public static final double[] kGroundCoralIntake = { -1.5, 7, 0.45 };
     public static final double[] kGroundAlgaeIntake = { 4.6, 0.0, 3.6 };
     public static final double[] kLowReefAlgaeIntake = { 17.83, 0.0, 4.1 };
     public static final double[] kHighReefAlgaeIntake = { 20.2, 0.0, 9.5 };

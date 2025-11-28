@@ -9,10 +9,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.kinematics.SwerveModuleState;
 // import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Control.Drivetrain.SwerveControlCmd;
 import frc.robot.subsystems.Arm.ArmControl;
 import frc.robot.subsystems.Arm.Elevator;
@@ -71,17 +69,10 @@ public class RobotContainer {
     driver.changeMode().onTrue(new InstantCommand(() -> arm.ChangeMode()));
 
     // Arm Control
-    
-    // driver.a().whileTrue(arm.ButtonA()).onFalse(arm.AReleased());
-    // driver.b().whileTrue(arm.ButtonB()).onFalse(arm.BReleased());
-    // driver.x().whileTrue(arm.ButtonX()).onFalse(arm.XReleased());
-    // driver.y().whileTrue(arm.ButtonY()).onFalse(arm.YReleased());
-
-    driver.a().whileTrue(elevator.down());
-    driver.y().whileTrue(elevator.up());
-    driver.b().whileTrue(pivot.down());
-    driver.x().whileTrue(pivot.up());
-    
+    driver.a().whileTrue(arm.ButtonA()).onFalse(arm.AReleased());
+    driver.b().whileTrue(arm.ButtonB()).onFalse(arm.BReleased());
+    driver.x().whileTrue(arm.ButtonX()).onFalse(arm.XReleased());
+    driver.y().whileTrue(arm.ButtonY()).onFalse(arm.YReleased());
 
     driver.LeftTrigger().whileTrue(arm.LeftTriggerPressed())
         .onFalse(arm.LeftTriggerReleased());
@@ -89,21 +80,18 @@ public class RobotContainer {
     driver.RightTrigger().onTrue(arm.RightTriggerPressed())
         .onFalse(arm.RightTriggerReleased());
 
-    // driver.LBumper().whileTrue(
-    //     new SwerveControlCmd(swerveSubsystem,
-    //         () -> -alignL.yOut(),
-    //         () -> alignL.xOut(),
-    //         () -> alignL.rotOut(),
-    //         () -> false));
-    // driver.RBumper().whileTrue(
-    //     new SwerveControlCmd(swerveSubsystem,
-    //         () -> -alignR.yOut(),
-    //         () -> alignR.xOut(),
-    //         () -> alignR.rotOut(),
-    //         () -> false));
-
-    driver.LBumper().whileTrue(hand.up());
-    driver.RBumper().whileTrue(hand.down());
+    driver.LBumper().whileTrue(
+        new SwerveControlCmd(swerveSubsystem,
+            () -> -alignL.yOut(),
+            () -> alignL.xOut(),
+            () -> alignL.rotOut(),
+            () -> false));
+    driver.RBumper().whileTrue(
+        new SwerveControlCmd(swerveSubsystem,
+            () -> -alignR.yOut(),
+            () -> alignR.xOut(),
+            () -> alignR.rotOut(),
+            () -> false));
   }
 
   public PathPlannerAuto getAutonomousCommand() {
